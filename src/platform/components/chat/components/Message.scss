@@ -1,0 +1,57 @@
+@import 'variables';
+
+.messageEntry {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.user {
+  display: inline-flex;
+  align-items: center;
+}
+
+.username {
+  font-weight: bold;
+  color: var(--bs-emphasis-color);
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.username_friend {
+  color: var(--bs-info);
+}
+
+.message {
+  word-break: break-all;
+  word-break: break-word; // For chrome
+  hyphens: auto;
+}
+
+.time {
+  font-size: 0.75em;
+  color: var(--bs-secondary);
+  white-space: nowrap;
+}
+
+.message_bot {
+  color: var(--bs-info);
+}
+
+.tooltip {
+  z-index: 20000;
+  max-width: 100rem;
+}
+
+.message_button {
+  @include remove-default-button-style();
+  text-decoration: underline;
+  color: inherit;
+  transition: transform 100ms ease 0s;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}

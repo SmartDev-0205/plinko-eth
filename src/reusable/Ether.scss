@@ -1,0 +1,23 @@
+@import 'variables';
+
+.ether {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ether_positiv {
+  color: $success
+}
+
+.ether_negativ {
+  color: $danger;
+}
+
+.value {
+  // nothing to add
+}
+
+.icon {
+  margin-left: 0.25em;
+  height: 1.1em;
+}

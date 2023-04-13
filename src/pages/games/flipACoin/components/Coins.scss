@@ -1,0 +1,81 @@
+@import "variables";
+
+.coins {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding-bottom: 2rem;
+}
+
+.button {
+  @include remove-default-button-style;
+}
+
+@keyframes boxShadow {
+  0% {
+    box-shadow: transparent 0 0 0 0;
+  }
+
+  50% {
+    box-shadow: 0 0 1rem 0.25rem;
+  }
+
+  100% {
+    box-shadow: transparent 0 0 0 0;
+  }
+}
+
+.coin {
+  width: 40%;
+  max-width: 6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+
+  transition: fill 250ms ease-in-out;
+  fill: $gray-300;
+
+  :global(.night) {
+    fill: $gray-300--night;
+  }
+
+
+  &_selected {
+    fill: $primary;
+  }
+
+  &_won {
+    border-radius: 50%;
+    color: $success;
+    animation: boxShadow 1000ms linear forwards;
+    fill: $success;
+  }
+
+  &_lost {
+    border-radius: 50%;
+    color: $danger;
+    animation: boxShadow 1000ms linear forwards;
+    fill: $danger;
+  }
+
+  :global(.night) &_selected {
+    fill: $primary--night;
+  }
+
+  :global(.night) &_won {
+    color: $success--night;
+    & :global(.coin) {
+      fill: $success--night;
+    }
+  }
+
+  :global(.night) &_lost {
+    color: $danger--night;
+    & :global(.coin) {
+      fill: $danger--night;
+    }
+  }
+}
+

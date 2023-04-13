@@ -1,0 +1,32 @@
+@import 'variables';
+
+.iconButton {
+  outline: none;
+  border: 0;
+  background: transparent;
+}
+
+@mixin color-variant($color) {
+  color: $color;
+  &:hover {
+    color: darken($color, 7.5%)
+  }
+}
+
+@each $color, $value in $theme-colors {
+  .iconButton_#{$color} {
+    @include color-variant($value);
+  }
+}
+
+@each $color, $value in $colors {
+  .iconButton_#{$color} {
+    @include color-variant($value);
+  }
+}
+
+@each $color, $value in $grays {
+  .iconButton_#{$color} {
+    @include color-variant($value);
+  }
+}

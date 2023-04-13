@@ -1,0 +1,1 @@
+{"version":3,"file":"ModalFooter.js","sourceRoot":"","sources":["../../../src/reusable/ModalFooter.tsx"],"names":[],"mappings":";;;;;;;;;;;AAAA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAC/B,OAAO,EAAC,WAAW,IAAI,oBAAoB,EAAC,MAAM,YAAY,CAAC;AAQ/D,MAAM,WAAW,GAAG,CAAC,EAAgB,EAAE,EAAE;QAAhB,IAAI,cAAR,EAAS,CAAD;IAAa,OAAA,oBAAC,oBAAoB,oBAAK,IAAI,EAAI,CAAA;CAAA,CAAC;AAE7E,eAAe,WAAW,CAAC"}

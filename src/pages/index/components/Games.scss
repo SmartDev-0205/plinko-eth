@@ -1,0 +1,42 @@
+@import "variables";
+
+.games {
+  padding-top: 2rem;
+}
+
+.gamesList {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+}
+
+.gameLink {
+  flex: 1 1 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 10rem;
+  text-decoration: none;
+  color: var(--bs-dark);
+
+  &_active {
+    &:hover > img {
+      transform: translateY(-2%);
+    }
+  }
+
+  &_disabled {
+    opacity: 0.2;
+  }
+}
+
+.text {
+  font-size: calc(0.5rem + 0.75vw);
+}
+
+
+.img {
+  transition: all .2s ease-in-out;
+  width: 90%;
+}

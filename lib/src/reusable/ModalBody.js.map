@@ -1,0 +1,1 @@
+{"version":3,"file":"ModalBody.js","sourceRoot":"","sources":["../../../src/reusable/ModalBody.tsx"],"names":[],"mappings":";;;;;;;;;;;AAAA,OAAO,KAAK,KAAK,MAAM,OAAO,CAAC;AAC/B,OAAO,EAAC,SAAS,IAAI,kBAAkB,EAAC,MAAM,YAAY,CAAC;AAQ3D,MAAM,SAAS,GAAG,CAAC,EAAgB,EAAE,EAAE;QAAhB,IAAI,cAAR,EAAS,CAAD;IAAa,OAAA,oBAAC,kBAAkB,oBAAK,IAAI,EAAI,CAAA;CAAA,CAAC;AAEzE,eAAe,SAAS,CAAC"}

@@ -1,0 +1,128 @@
+@import "variables";
+@import "bootstrap/scss/mixins/breakpoints";
+
+.center {
+  vertical-align: middle !important;
+  text-align: center;
+}
+
+.infoButton {
+  @include remove-default-button-style();
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  color: var(--bs-secondary);
+  font-size: 0.9rem;
+}
+
+.gameLink {
+  color: var(--bs-body-color);
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.userButton {
+  @include remove-default-button-style();
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+  font-weight: bold;
+  color: inherit;
+}
+
+.table {
+  position: relative;
+  z-index: 1;
+  @include media-breakpoint-down(sm) {
+    font-size: 0.75rem;
+  }
+}
+
+.head {
+  position: relative;
+  z-index: 2;
+
+  & > tr > th {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.entries {
+  tr:nth-child(n) {
+      animation: 500ms ease-out forwards;
+  }
+
+  tr:first-child {
+    animation-name: slideIn
+  }
+
+  tr:nth-child(2n) {
+    animation-name: slide1;
+  }
+
+  tr:nth-child(2n + 3) {
+    animation-name: slide2;
+  }
+
+  &:before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2rem;
+    background-color: var(--bs-body-bg);
+    width: 100%;
+    z-index: 1;
+  }
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2rem;
+    height: 1rem;
+    background: linear-gradient(var(--bs-body-bg), rgba(255, 255, 255, 0));
+    width: 100%;
+    z-index: 1;
+  }
+
+}
+
+.tdGameType {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0 !important;
+}
+
+.gameType {
+  line-height: normal;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.profitHeader {
+  text-align: right;
+}
+
+.profit {
+  text-align: right;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+
+@keyframes slide1 {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slide2 {
+  from {
+    transform: translateY(-100%);
+  }
+}

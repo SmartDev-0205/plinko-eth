@@ -1,0 +1,16 @@
+@import "variables";
+
+.wrapper {
+  background-color: var(--bs-secondary-bg);
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.wheelGrid {
+  padding: $spacer;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 30rem;
+}

@@ -1,0 +1,31 @@
+@import 'variables';
+
+.overview {
+  padding-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats {
+  margin-top: 1em;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.statEntry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.entryHeader {
+  @include label-header;
+}
+
+.userName {
+  @include remove-default-button-style();
+  font-weight: bold;
+  color: inherit;
+}

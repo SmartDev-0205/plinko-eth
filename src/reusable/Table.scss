@@ -1,0 +1,10 @@
+@import "variables";
+@import "~bootstrap/scss/tables";
+
+
+.noBorders {
+  td, th {
+    border: none !important;
+  }
+}
+

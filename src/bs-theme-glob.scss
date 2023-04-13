@@ -1,0 +1,144 @@
+@use "sass:math";
+
+@import 'variables';
+@import "~bootstrap";
+
+// sticky footer
+#app {
+  display:flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+footer {
+  margin-top: auto;
+}
+
+// navbar link
+.navbar-nav {
+  .nav-link {
+    font-weight: 500;
+  }
+}
+
+
+.text-overflow-dynamic-container {
+    position: relative;
+    max-width: 100%;
+    padding: 0 !important;
+    display: -webkit-flex;
+    display: -moz-flex;
+    display: flex;
+    vertical-align: text-bottom !important;
+}
+.text-overflow-dynamic-ellipsis {
+    position: absolute;
+    white-space: nowrap;
+    overflow-y: visible;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    min-width: 0;
+    top: 0;
+    left: 0;
+}
+.text-overflow-dynamic-container:after,
+.text-overflow-dynamic-ellipsis:after {
+    content: '-';
+    display: inline-block;
+    visibility: hidden;
+    width: 0;
+}
+
+td {
+  white-space: nowrap;
+}
+
+@include media-breakpoint-down(md){
+  .container {
+    max-width: 100%;
+  }
+}
+
+.tooltip-inner {
+  max-width: 100em;
+}
+
+.games__form-group {
+  width: 100%;
+}
+
+// pointer for buttons
+button { cursor: pointer; }
+
+.popover {
+  max-width: 400px;
+  z-index: 1050; // in background of modal
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.07);
+}
+
+.dropdown-menu {
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.07);
+}
+
+em {
+  border-bottom: 2px dotted;
+}
+
+[data-whatintent='touch'] button:focus, [data-whatintent='touch'] .rc-slider-handle:focus, [data-whatintent='touch'] a:focus,
+[data-whatintent='mouse'] button:focus, [data-whatintent='mouse'] .rc-slider-handle:focus, [data-whatintent='mouse'] a:focus
+{
+  outline: none !important;
+  box-shadow: none !important;
+
+}
+
+@each $color, $value in $theme-colors {
+  [data-whatintent='touch'] .btn-#{$color}:focus {
+    background-color: $value;
+    border-color: $value;
+  }
+}
+
+.betButton {
+  height: 4rem;
+  font-weight: 600;
+}
+
+label {
+  font-size: 0.85em;
+  font-weight: 500;
+  color: $gray-600;
+}
+
+.form-control {
+  &:disabled,
+  &[readonly] {
+    border-color: transparent;
+  }
+}
+
+@include media-breakpoint-down(md) {
+  .form-group {
+    margin-bottom: 0.5rem;
+  }
+}
+
+// Restore Bootstrap 3 "hidden" utility classes.
+@each $bp in map-keys($grid-breakpoints) {
+  .hidden-#{$bp}-up {
+    @include media-breakpoint-up($bp) {
+      display: none !important;
+    }
+  }
+  .hidden-#{$bp}-down {
+    @include media-breakpoint-down($bp) {
+      display: none !important;
+    }
+  }
+  .hidden-#{$bp}-only{
+    @include media-breakpoint-only($bp){
+      display:none !important;
+    }
+  }
+}

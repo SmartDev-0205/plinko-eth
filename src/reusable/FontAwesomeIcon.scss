@@ -1,0 +1,17 @@
+@import 'variables';
+
+.icon {
+  color: inherit;
+}
+
+@each $color, $value in $theme-colors {
+  .icon-#{$color} {
+    color: $value;
+  }
+}
+
+@each $color, $value in $colors {
+  .icon-#{$color} {
+    color: $value;
+  }
+}

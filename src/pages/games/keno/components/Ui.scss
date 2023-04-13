@@ -1,0 +1,38 @@
+@import "variables";
+
+.ui {
+  background-color: var(--bs-secondary-bg);
+}
+
+.menu {
+  padding: 1rem;
+  height: 100%;
+  background-color: var(--bs-body-bg);
+}
+
+.grid {
+  position: relative;
+}
+
+.resultPopover {
+  transition: all .2s ease-in-out;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: var(--bs-body-bg);
+  border: 3px solid;
+  border-radius: var(--bs-border-radius);
+  border-color: var(--bs-success);
+  padding: 1rem;
+  opacity: 0.9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.resultDetails {
+  font-size: 1.25em;
+  font-weight: 600;
+}
