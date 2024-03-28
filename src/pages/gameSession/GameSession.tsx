@@ -3,9 +3,7 @@ import {connect} from "react-redux";
 
 import {useParams} from "react-router-dom";
 import {bindActionCreators} from "redux";
-import BetsList from "../../platform/components/bet/BetsList";
 import {User as UserType} from "../../platform/modules/account/types";
-import {Bet} from "../../platform/modules/bets/types";
 import {showBetModal, showUserModal} from "../../platform/modules/modals/actions";
 import {Container, DataLoader} from "../../reusable";
 import Ether from "../../reusable/Ether";
@@ -69,17 +67,6 @@ const GameSession = (props: Props) => {
                         <span>{gameState.status === "ENDED" ? gameState.roundId - 1 : gameState.roundId} Bets</span>
                         <Ether colored gwei={gameState.balance} />
                     </div>
-                )}
-            />
-            <DataLoader<{bets: Bet[]}>
-                url={`/bets/gameId/${gameId}`}
-                success={(data) => (
-                    <BetsList
-                        bets={data.bets}
-                        showUser={false}
-                        showBetModal={(bet) => showBetModal({bet})}
-                        showUserModal={(user) => showUserModal({user})}
-                    />
                 )}
             />
         </Container>

@@ -1,12 +1,10 @@
 import {toChecksumAddress} from "ethereumjs-util";
-
-
-console.log("-------contract address---------------",process.env.CONTRACT_ADDRESS)
 export const NAME = "Dicether";
 export const VERSION = process.env.VERSION || "";
 export const BUILD_DATE = new Date(process.env.BUILD_DATE || new Date());
 
 export const CONTRACT_ADDRESS = toChecksumAddress(process.env.CONTRACT_ADDRESS || "");
+export const TOKEN_ADDRESS = toChecksumAddress(process.env.TOKEN_ADDRESS || "");
 export const CHAIN_ID = Number.parseInt(process.env.CHAIN_ID || "1", 10);
 export const SIGNATURE_VERSION = 2;
 export const NEW_EIP_GAME_ID = 572;
@@ -33,8 +31,8 @@ export const REALM = "Dicether";
 
 export const ACCOUNT_BALANCE_POLL_INTERVAL = 5000;
 
-export const FROM_WEI_TO_BASE = 1e9; // conversion from wei to base unit GWEI
-export const FROM_BASE_TO_WEI = 1e9; // conversion from base unit GWEI to wei
+export const FROM_WEI_TO_BASE = 1e18; // conversion from wei to base unit GWEI
+export const FROM_BASE_TO_WEI = 1e18; // conversion from base unit GWEI to wei
 
 export const NETWORK_NAME = "Main";
 
@@ -43,8 +41,8 @@ export const MAX_GAME_SESSION_VALUE = 30e9;
 export const HOUSE_EDGE = 150;
 export const HOUSE_EDGE_DIVISOR = 10000;
 
-export const MIN_BET_VALUE = 1e4;
-export const MAX_BET_VALUE = 4e9;
+export const MIN_BET_VALUE = 1e9;
+export const MAX_BET_VALUE = 1e20;
 export const MIN_BANKROLL = 9e9;
 export const KELLY_FACTOR = 1;
 

@@ -10,9 +10,6 @@ var tokenContract;
 describe("deploy contracts", function () {
 	it("Create account", async function () {
 		[owner,addr1,addr2] = await ethers.getSigners();
-		console.log("This is owner address : ",owner.address);
-		
-		
 	});
 
 	it("deploy contracts", async function () {
@@ -30,7 +27,6 @@ describe("contracts test", function () {
 	it("buy", async () => {
 		let usercontract = await tokenContract.connect(addr1);
 		let balance = await addr1.getBalance();
-		console.log("before balance",balance);
 
 		let tx = await  usercontract.pliko_play(8,{ value: toBigNum("1", 18) });
 		await tx.wait();

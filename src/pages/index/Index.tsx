@@ -26,17 +26,9 @@ export const mapStateToProps = (state: RootState) => {
 
 export type Props = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-const Index = ({loggedIn, showRegisterModal}: Props) => (
+const Index = () => (
     <div>
-        {/* <Overview loggedIn={loggedIn} showRegisterModal={showRegisterModal} /> */}
-        {/* {!loggedIn && <SmallFeatures />} */}
         <Games />
-        <Section>
-            <Container>
-                <Stats showMyBets={false} />
-            </Container>
-        </Section>
-        <BigFeatures />
     </div>
 );
 

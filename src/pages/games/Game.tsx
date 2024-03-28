@@ -16,17 +16,9 @@ import {catchError} from "../../platform/modules/utilities/asyncActions";
 import {Container, Section} from "../../reusable";
 import {State} from "../../rootReducer";
 import {Dispatch} from "../../util/util";
-import ChooseFrom12 from "./chooseFrom12/ChooseFrom12";
-import GameFooter from "./components/GameFooter";
-import GameHeader from "./components/GameHeader";
-import Dice from "./dice/Dice";
-import FlipACoin from "./flipACoin/FlipACoin";
-import Keno from "./keno/Keno";
 import Plinko from "./plinko/Plinko";
-import Wheel from "./wheel/Wheel";
 
 import Style from "./Game.scss";
-import PathNotFound from "../../app/PathNotFound";
 
 const mapStateToProps = ({games, web3, account}: State) => {
     const {gameState, info} = games;
@@ -112,45 +104,10 @@ class Game extends React.Component<Props> {
                 <Section gray>
                     <Container>
                         <div className={Style.wrapper}>
-                            {loggedIn && (
-                                <GameHeader
-                                    web3State={web3State}
-                                    gameState={gameState}
-                                    onStartGame={this.createGame}
-                                    onEndGame={this.endGame}
-                                    onSeedRequest={this.requestSeed}
-                                    onForceEnd={this.forceEnd}
-                                    onConflictEnd={this.conflictEnd}
-                                />
-                            )}
                             <div className={Style.gameWrapper}>
-                                {/* <Routes>
-                                    <Route path="dice" element={<Dice />} />
-                                    <Route path="chooseFrom12" element={<ChooseFrom12 />} />
-                                    <Route path="flipACoin" element={<FlipACoin />} />
-                                    <Route path="keno" element={<Keno />} />
-                                    <Route path="wheel" element={<Wheel />} />
-                                    <Route path="plinko" element={<Plinko />} />
-                                    <Route path="*" element={<PathNotFound />} />
-                                </Routes>
-                                 */}
-                                 <Plinko/>
+                                <Plinko />
                             </div>
-                            <GameFooter
-                                authenticated={loggedIn}
-                                showHelp={showHelp}
-                                onToggleHelp={this.onToggleHelp}
-                                showExpertView={showExpertView}
-                                onToggleExpertView={this.onToggleExpertView}
-                                sound={sound}
-                                onToggleSound={this.onToggleSound}
-                            />
                         </div>
-                    </Container>
-                </Section>
-                <Section>
-                    <Container>
-                        <Stats showMyBets={loggedIn} />
                     </Container>
                 </Section>
             </div>

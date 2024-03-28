@@ -52,7 +52,6 @@ export function changeJWT(jwt: string | null) {
     };
 }
 
-
 export function authenticate() {
     return async (dispatch: Dispatch, getState: GetState) => {
         const web3State = getState().web3;
@@ -70,36 +69,7 @@ export function authenticate() {
             dispatch(showErrorMessage("Error: You need to log in to your web3 wallet!!"));
             return;
         }
-
-        let nonce = "";
-        return axios
-            .post("/auth/authenticationNonce", {
-                address: web3Account,
-            })
-            .then((response) => {
-                nonce = response.data.nonce;
-                const typedData = {
-                    types: authenticateTypes,
-                    primaryType: "Authenticate",
-                    domain: {name: REALM},
-                    message: {address: web3Account, nonce},
-                };
-
-                return signTypedData(web3, web3Account, typedData);
-            })
-            .then((result) => {
-                return axios.post("/auth/authenticate", {
-                    realm: REALM,
-                    address: web3Account,
-                    nonce,
-                    signature: result,
-                });
-            })
-            .then((response) => {
-                dispatch(hideRegisterModal());
-                initUser(dispatch, response.data.jwt);
-            })
-            .catch((error) => catchError(error, dispatch));
+        return;
     };
 }
 

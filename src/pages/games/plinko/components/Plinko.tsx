@@ -134,7 +134,6 @@ class Plinko extends React.Component<Props, State> {
         for (let pos = 0; pos < results.length; pos++) {
             resString += `${pos}: [${results[pos].join(", ")}],\n`;
         }
-        console.log(resString);
     };
 
     public simulateBall = (startPos: number) => {

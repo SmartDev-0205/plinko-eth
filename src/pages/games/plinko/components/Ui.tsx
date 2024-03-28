@@ -8,6 +8,7 @@ import HowToPlay from "./HowToPlay";
 import Plinko from "./Plinko";
 
 import Style from "./Ui.scss";
+import {Input} from "reactstrap";
 
 export interface Props extends WithTranslation {
     disableRiskRowUpdate: boolean;
@@ -20,11 +21,13 @@ export interface Props extends WithTranslation {
     showResult: boolean;
     showHelp: boolean;
     nightMode: boolean;
+    withdrawValue: string;
     onRiskChange(risk: number): void;
     onRowsChange(rows: number): void;
     onToggleHelp(): void;
     onValueChange(value: number): void;
     onPlaceBet(): void;
+    onWithdraw(): void;
 }
 
 export type State = {
@@ -58,11 +61,13 @@ class Ui extends React.PureComponent<Props, State> {
             showResult,
             showHelp,
             nightMode,
+            withdrawValue,
             onToggleHelp,
             onValueChange,
             onRiskChange,
             onRowsChange,
             onPlaceBet,
+            onWithdraw,
             t,
         } = this.props;
 
@@ -123,8 +128,12 @@ class Ui extends React.PureComponent<Props, State> {
                                     </FormGroup>
                                 </Col>
                             </Row>
-                            <Button className="betButton" block color="success" onClick={onPlaceBet}>
+                            <Button className="betButton mb-3" block color="success" onClick={onPlaceBet}>
                                 {t("bet")}
+                            </Button>
+                            <Input className="mb-3" value={withdrawValue} disabled />
+                            <Button className="betButton" block color="warning" onClick={onWithdraw}>
+                                {t("Withdraw")}
                             </Button>
                             {/* <Button className="betButton" block color="warning" onClick={this.onSimulate}>
                                {t("simulate")}

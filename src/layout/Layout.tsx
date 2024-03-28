@@ -10,14 +10,14 @@ import {State} from "../rootReducer";
 import Footer from "./Footer";
 import Header from "./Header";
 
-const mapStateToProps = ({chat, account, app}: State) => {
+const mapStateToProps = ({chat, account, app, web3}: State) => {
     const show = chat.show;
     const jwt = account.jwt;
-
     return {
         showChat: show,
         authenticated: jwt !== null,
         nightMode: app.nightMode,
+        connected: web3.account ? true : false,
     };
 };
 
@@ -45,6 +45,7 @@ const Layout = ({
     showChat,
     authenticated,
     nightMode,
+    connected,
     toggleChat,
     authenticate,
     toggleTheme,
@@ -52,19 +53,21 @@ const Layout = ({
 }: Props) => {
     const className = showChat ? "chat-open" : "";
 
+    console.log("connected------------------>", connected);
+
     return (
         <div id="app" className={className}>
             <Header
                 showChat={showChat}
                 authenticated={authenticated}
                 nightMode={nightMode}
+                connected={connected}
                 toggleChat={() => toggleChat(true)}
                 authenticate={authenticate}
                 toggleTheme={toggleTheme}
                 showRegisterModal={showRegisterModal}
             />
             {children}
-            <Footer showChat={showChat} />
         </div>
     );
 };

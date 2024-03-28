@@ -4,10 +4,11 @@ const domain = "dicether.com";
 
 module.exports = {
     domain: domain,
-    contractAddress: "0x309599Be23d037c6d59fC2d6d77f3dFF493d935b",
+    contractAddress: "0x3200f1887685EF783C72770701C8a4A490bcbA06",
+    TOKEN_ADDRESS: "0xe5f129a4770d0e955c064b5d0adecdfc7726eff8",
     serverAddress: "0x437EC7503dFF1b5F5Ab4Dab4455C45a270629f4d",
     apiUrl: `https://api.${domain}/api`,
     websocketUrl: `https://websocket.${domain}`,
-    chainId: 1,
+    chainId: 56,
     version: new GitRevisionPlugin().commithash(),
 };

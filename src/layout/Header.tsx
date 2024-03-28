@@ -15,6 +15,7 @@ interface Props extends WithTranslation {
     authenticated: boolean;
     showChat: boolean;
     nightMode: boolean;
+    connected: boolean;
     toggleChat(show: boolean): void;
     authenticate(): void;
     showRegisterModal(): void;
@@ -61,7 +62,7 @@ class Header extends React.Component<Props, State> {
     };
 
     render() {
-        const {authenticated, showRegisterModal, showChat, nightMode, t} = this.props;
+        const {authenticated, showRegisterModal, showChat, connected, nightMode, t} = this.props;
         const {isOpen} = this.state;
 
         const className = ClassName({
@@ -78,8 +79,7 @@ class Header extends React.Component<Props, State> {
                     </NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={isOpen} navbar>
-                        <Nav navbar>
-                        </Nav>
+                        <Nav navbar></Nav>
                         <Nav className="ms-auto" navbar>
                             <NavItem>
                                 <NavLink>
@@ -92,11 +92,6 @@ class Header extends React.Component<Props, State> {
                             </NavItem>
                             {authenticated
                                 ? [
-                                    //   <NavItem key="1">
-                                    //       <NavLink tag={RRNavLink} to="/account/stats">
-                                    //           {t("account")}
-                                    //       </NavLink>
-                                    //   </NavItem>,
                                       <NavItem key="2">
                                           <NavLink tag={RRNavLink} to="/logout">
                                               {t("logout")}
@@ -104,15 +99,14 @@ class Header extends React.Component<Props, State> {
                                       </NavItem>,
                                   ]
                                 : [
-                                    //   <NavItem key="1">
-                                    //       <NavLink id="register" href="#" onClick={showRegisterModal}>
-                                    //           {t("register")}
-                                    //       </NavLink>
-                                    //   </NavItem>,
                                       <NavItem key="2">
-                                          <NavLink href="#" onClick={this.props.authenticate}>
-                                              {t("login")}
-                                          </NavLink>
+                                          {connected ? (
+                                              <NavLink href="#"></NavLink>
+                                          ) : (
+                                              <NavLink href="#" onClick={this.props.authenticate}>
+                                                  {t("Connect")}
+                                              </NavLink>
+                                          )}
                                       </NavItem>,
                                   ]}
                         </Nav>

@@ -19,7 +19,7 @@
     "prepare": "husky install",
     "prettier": "prettier --write './**/*.{ts,tsx}'",
     "prettier-check": "prettier --check './**/*.{ts,tsx}'",
-    "start": "DEV_SERVER=TRUE webpack serve --config webpack/dev.js --progress --port 2992",
+    "start": "cross-env DEV_SERVER=TRUE webpack serve --config webpack/dev.js --progress --port 2992",
     "stylelint": "stylelint './**/*.scss'"
   },
   "lint-staged": {

@@ -20,10 +20,11 @@ import Ui from "./components/Ui";
 import {Helmet} from "react-helmet";
 import {playFromBegin} from "../../../util/audio";
 import {Dispatch, GetState} from "../../../util/util";
-import {CONTRACT_ADDRESS} from "../../../config/config";
+import {CONTRACT_ADDRESS, TOKEN_ADDRESS} from "../../../config/config";
+import Web3 from "web3";
 
 const plinkoAbi = require("assets/json/Plinko.json");
-
+const tokenAbi = require("assets/json/Token.json");
 
 const mapStateToProps = ({games, account, web3, app}: State) => {
     const {info, gameState, plinko} = games;
@@ -35,7 +36,7 @@ const mapStateToProps = ({games, account, web3, app}: State) => {
         loggedIn: account.jwt !== null,
         plinko,
         nightMode: app.nightMode,
-        web3
+        web3,
     };
 };
 
@@ -55,6 +56,7 @@ export type PlinkoState = {
     showResult: boolean;
     ballsFalling: number;
     result: {betNum: number; num: number; won: boolean; userProfit: number};
+    reward: string;
 };
 
 class Plinko extends React.PureComponent<Props, PlinkoState> {
@@ -67,45 +69,99 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             showResult: false,
             ballsFalling: 0,
             result: {betNum: 0, num: 0, won: false, userProfit: 0},
+            reward: "0",
         };
     }
 
+    componentDidMount() {
+        setInterval(() => {
+            this.calcReward().then((rewardAmount: any) => {
+                if (rewardAmount) {
+                    this.setState({
+                        reward: Web3.utils.fromWei(rewardAmount, "ether"),
+                    });
+                }
+            });
+        }, 1000); // Set up the interval
+    }
 
-    private playPlinko = async () =>  {
-            const account = this.props.web3.account;
-            const web3 = this.props.web3.web3;
-            if (!web3) return;
-            const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
-            console.log("stress contract",contract);
-            const pliko_play = contract.methods.pliko_play;
-            console.log(this.props.plinko.num - 200);
-            let tx = pliko_play(this.props.plinko.num - 200)
-                    .send({from: account, value: this.props.plinko.value * 10 **  9, gas: 120000})
-            return tx;
+    private calcReward = async () => {
+        const account = this.props.web3.account;
+        const web3 = this.props.web3.web3;
+        console.log("starting calcuation reward-------------", this.props.web3);
+        if (!(web3 && account)) return;
+        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
+        console.log("stress contract", contract);
+        const tx = contract.methods.playerWinnings(account).call({from: account});
+        return tx;
     };
 
-    private getResult = async () =>  {
+    private playPlinko = async () => {
         const account = this.props.web3.account;
         const web3 = this.props.web3.web3;
         if (!web3) return;
         const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
-        console.log("--------contract--------------",contract);
-        const get_result = contract.methods.getResult;
-        let tx = get_result().call({from: account,  gas: 120000})
+        console.log("stress contract", contract);
+        const pliko_play = contract.methods.pliko_play;
+        console.log(this.props.plinko.num - 200);
+        let tx = pliko_play(this.props.plinko.num - 200).send({
+            from: account,
+            value: this.props.plinko.value * 10 ** 9,
+            gas: 120000,
+        });
         return tx;
-};
+    };
+
+    private playTokenPlinko = async () => {
+        const account = this.props.web3.account;
+        const web3 = this.props.web3.web3;
+        if (!web3) return;
+        const tokenContract = new web3.eth.Contract(tokenAbi, TOKEN_ADDRESS);
+        const approve = tokenContract.methods.approve;
+        let amount = this.props.plinko.value.toString();
+        await approve(CONTRACT_ADDRESS, Web3.utils.toWei(amount, "gwei")).send({
+            from: account,
+        });
+
+        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
+        const pliko_token_play = contract.methods.pliko_token_play;
+        let tx = pliko_token_play(this.props.plinko.num - 200, Web3.utils.toWei(amount, "gwei")).send({
+            from: account,
+        });
+        return tx;
+    };
+
+    private onWithdraw = async () => {
+        const account = this.props.web3.account;
+        const web3 = this.props.web3.web3;
+        if (!web3) return;
+        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
+        const withdrawUserWinnings = contract.methods.withdrawUserWinnings;
+        await withdrawUserWinnings().send({
+            from: account,
+        });
+    };
+
+    private getResult = async () => {
+        const account = this.props.web3.account;
+        const web3 = this.props.web3.web3;
+        if (!web3) return;
+        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
+        console.log("--------contract--------------", contract);
+        const get_result = contract.methods.getResult;
+        let tx = get_result().call({from: account, gas: 120000});
+        return tx;
+    };
 
     private onToggleHelp = () => {
         const {toggleHelp, info} = this.props;
         toggleHelp(!info.showHelp);
     };
 
-    
-
     private onPlaceBet = async () => {
         const {plinko, addNewBet, placeBet, catchError, showErrorMessage, web3Available, gameState, loggedIn} =
             this.props;
-        console.log("number -------------------",plinko.num);
+        console.log("number -------------------", plinko.num);
         const safeBetValue = Math.round(plinko.value);
         const num = plinko.num;
         const gameType = GameType.PLINKO;
@@ -117,62 +173,25 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         }
 
         const canBet = canPlaceBet(gameType, num, safeBetValue, loggedIn, web3Available, gameState);
-        if(!canBet) return;
+        if (!canBet) return;
         // --------------------------- update here -----------------------------
         console.log("start game");
         try {
-            await this.playPlinko();
+            await this.playTokenPlinko();
             console.log("-------------------------------------finished------------------------");
             let numBitsSet = await this.getResult();
-            console.log("result-------",numBitsSet);
-            let resultNum:number = 1500;
+            console.log("result-------", numBitsSet);
+            let resultNum: number = 1500;
             // const numBitsSet = popCnt(resultNum);
-            console.log("numBitsSet------",numBitsSet);
+            console.log("numBitsSet------", numBitsSet);
             this.setState({
                 ballsFalling: this.state.ballsFalling + 1,
             });
             await this.ui.current?.plinko.current?.addBall(numBitsSet, resultNum);
             console.log("finshed--------------------------");
-            // this.setState({
-            //     showResult: true,
-            //     ballsFalling: this.state.ballsFalling - 1,
-            //     result,
-            // });
-            // addNewBet(result.bet);
-            // this.playSound(sounds.plinkoResult);
-
-            // await sleep(5000);
-            // this.setState({showResult: false});
         } catch (error) {
             catchError(error);
         }
-
-        // if (canBet.canPlaceBet) {
-        //     try {
-        //         const result = await placeBet(num, safeBetValue, gameType);
-        //         const resultNum = result.num;
-
-        //         const numBitsSet = popCnt(resultNum);
-        //         this.setState({
-        //             ballsFalling: this.state.ballsFalling + 1,
-        //         });
-        //         await this.ui.current?.plinko.current?.addBall(numBitsSet, resultNum);
-        //         this.setState({
-        //             showResult: true,
-        //             ballsFalling: this.state.ballsFalling - 1,
-        //             result,
-        //         });
-        //         addNewBet(result.bet);
-        //         this.playSound(sounds.plinkoResult);
-
-        //         await sleep(5000);
-        //         this.setState({showResult: false});
-        //     } catch (error) {
-        //         catchError(error);
-        //     }
-        // } else {
-        //     showErrorMessage(canBet.errorMessage);
-        // }
     };
 
     private onValueChange = (value: number) => {
@@ -211,6 +230,8 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         const {ballsFalling, showResult, result} = this.state;
 
         let maxBetValue = maxBet(GameType.PLINKO, num, MIN_BANKROLL, KELLY_FACTOR);
+        maxBetValue = 1e18;
+
         if (gameState.status !== "ENDED") {
             const max = Math.min(gameState.stake + gameState.balance, maxBetValue);
             maxBetValue = Math.max(max, MIN_BET_VALUE);
@@ -229,6 +250,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
                     risk={Math.floor(num / 100)}
                     rows={num % 100}
                     value={value}
+                    withdrawValue={this.state.reward}
                     maxBetValue={maxBetValue}
                     onValueChange={this.onValueChange}
                     onPlaceBet={this.onPlaceBet}
@@ -238,6 +260,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
                     result={{...result}}
                     showHelp={info.showHelp}
                     onToggleHelp={this.onToggleHelp}
+                    onWithdraw={this.onWithdraw}
                 />
             </>
         );

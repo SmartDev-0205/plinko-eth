@@ -71,8 +71,7 @@ class App extends React.Component<Props> {
     }
 
     componentDidMount() {
-        const {fetchAllWeb3, fetchAccountBalance, loadDefaultData, registerAccountChainIdListener} =
-            this.props;
+        const {fetchAllWeb3, fetchAccountBalance, loadDefaultData, registerAccountChainIdListener} = this.props;
 
         loadDefaultData();
 
@@ -92,7 +91,6 @@ class App extends React.Component<Props> {
     }
 
     componentWillUnmount() {
-
         unregisterAccounChainIdListener();
         if (this.accountBalanceTimer !== null) {
             clearInterval(this.accountBalanceTimer);
@@ -122,23 +120,8 @@ class App extends React.Component<Props> {
                     />
                 </Helmet>
                 <Layout>
-                    {logout && <Navigate replace to="/logout" />}
                     <Routes>
                         <Route path="/" element={<Game />} />
-                        <Route path="/faq" element={<Faq />} />
-                        <Route path="/hallOfFame/*" element={<HallOfFame />} />
-                        <Route path="/termsOfUse" element={<TermsOfUse />} />
-                        <Route path="/logout" element={<LogoutRoute />} />
-                        <Route
-                            path="/account/*"
-                            element={
-                                <RequireAuth authenticated={userAuth !== null}>
-                                    <Account />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route path="/gameSession/:gameId" element={<GameSession />} />
-                        <Route path="*" element={<PathNotFound insideContainer />} />
                     </Routes>
                     <Modals />
                     <BeforeUnload gameState={gameState} />
