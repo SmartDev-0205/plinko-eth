@@ -42,6 +42,7 @@ export function fetchWeb3() {
 }
 
 export function fetchAccount() {
+    console.log("platform-------");
     return async (dispatch: Dispatch, getState: GetState) => {
         const web3 = getState().web3.web3;
         const curAccount = getState().web3.account;

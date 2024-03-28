@@ -11,11 +11,6 @@ const config = require('./config');
 module.exports = merge(common, {
     mode: 'production',
     plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {from: 'assets/robots.txt', to: '../robots.txt'},
-                {from: 'headers', to: '../'}
-        ]}),
         new webpack.DefinePlugin({
             'process.env': {
                 'NODE_ENV': JSON.stringify('staging'),

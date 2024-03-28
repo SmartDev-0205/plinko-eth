@@ -4,7 +4,8 @@ export const VERSION = process.env.VERSION || "";
 export const BUILD_DATE = new Date(process.env.BUILD_DATE || new Date());
 
 export const CONTRACT_ADDRESS = toChecksumAddress(process.env.CONTRACT_ADDRESS || "");
-export const TOKEN_ADDRESS = toChecksumAddress(process.env.TOKEN_ADDRESS || "");
+export const TOKEN_ADDRESS = toChecksumAddress("0xe5f129a4770d0e955c064b5d0adecdfc7726eff8");
+console.log("address", CONTRACT_ADDRESS, TOKEN_ADDRESS);
 export const CHAIN_ID = Number.parseInt(process.env.CHAIN_ID || "1", 10);
 export const SIGNATURE_VERSION = 2;
 export const NEW_EIP_GAME_ID = 572;

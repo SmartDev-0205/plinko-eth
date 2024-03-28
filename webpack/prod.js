@@ -1,8 +1,8 @@
 const webpack = require("webpack");
-const {merge} = require("webpack-merge");
+const { merge } = require("webpack-merge");
 const SitemapPlugin = require("sitemap-webpack-plugin").default;
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 
 const common = require("./common");
 const config = require("./config");
@@ -23,13 +23,8 @@ const Paths = [
 
 module.exports = merge(common, {
     mode: "production",
+    
     plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                {from: "assets/robots.txt", to: "../robots.txt"},
-                {from: "headers", to: "../"},
-            ],
-        }),
         new webpack.DefinePlugin({
             "process.env": {
                 NODE_ENV: JSON.stringify("production"),
@@ -44,12 +39,16 @@ module.exports = merge(common, {
                 BUILD_DATE: JSON.stringify(new Date().toISOString()),
             },
         }),
-        new SitemapPlugin({base: `https://${config.domain}`, paths: Paths, options: {skipGzip: true}}),
         new webpack.SourceMapDevToolPlugin({
             filename: "[file].map",
         }),
         new CleanWebpackPlugin(),
     ],
+    performance: {
+        maxAssetSize: 512000, // Adjust the size in bytes as needed
+        maxEntrypointSize: 512000, // Adjust the size in bytes as needed
+        hints: false // Set to 'error' to treat these warnings as errors, or false to disable
+    },
     optimization: {
         minimize: true,
     },

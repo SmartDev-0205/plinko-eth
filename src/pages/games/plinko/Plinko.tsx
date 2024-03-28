@@ -22,6 +22,7 @@ import {playFromBegin} from "../../../util/audio";
 import {Dispatch, GetState} from "../../../util/util";
 import {CONTRACT_ADDRESS, TOKEN_ADDRESS} from "../../../config/config";
 import Web3 from "web3";
+import Style from "./pinko.scss";
 
 const plinkoAbi = require("assets/json/Plinko.json");
 const tokenAbi = require("assets/json/Token.json");
@@ -57,6 +58,7 @@ export type PlinkoState = {
     ballsFalling: number;
     result: {betNum: number; num: number; won: boolean; userProfit: number};
     reward: string;
+    loading: boolean;
 };
 
 class Plinko extends React.PureComponent<Props, PlinkoState> {
@@ -70,6 +72,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             ballsFalling: 0,
             result: {betNum: 0, num: 0, won: false, userProfit: 0},
             reward: "0",
+            loading: false,
         };
     }
 
@@ -159,18 +162,13 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
     };
 
     private onPlaceBet = async () => {
+        this.setState({loading: true});
         const {plinko, addNewBet, placeBet, catchError, showErrorMessage, web3Available, gameState, loggedIn} =
             this.props;
         console.log("number -------------------", plinko.num);
         const safeBetValue = Math.round(plinko.value);
         const num = plinko.num;
         const gameType = GameType.PLINKO;
-
-        if (!this.loadedSounds) {
-            // workaround for sound playback on mobile browsers: load sounds in user gesture handler
-            sounds.plinkoResult.load();
-            this.loadedSounds = true;
-        }
 
         const canBet = canPlaceBet(gameType, num, safeBetValue, loggedIn, web3Available, gameState);
         if (!canBet) return;
@@ -191,7 +189,9 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             console.log("finshed--------------------------");
         } catch (error) {
             catchError(error);
+            this.setState({loading: false});
         }
+        this.setState({loading: false});
     };
 
     private onValueChange = (value: number) => {
@@ -227,7 +227,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
     render() {
         const {nightMode, info, gameState, plinko} = this.props;
         const {num, value} = plinko;
-        const {ballsFalling, showResult, result} = this.state;
+        const {ballsFalling, showResult, result, loading} = this.state;
 
         let maxBetValue = maxBet(GameType.PLINKO, num, MIN_BANKROLL, KELLY_FACTOR);
         maxBetValue = 1e18;
@@ -262,6 +262,26 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
                     onToggleHelp={this.onToggleHelp}
                     onWithdraw={this.onWithdraw}
                 />
+                {loading ? (
+                    <div
+                        className="position-fixed top-0 start-0 w-100 vh-100 d-flex flex-column align-items-center justify-content-center"
+                        style={{backgroundColor: "#111111", zIndex: 10000, opacity: 0.5}}
+                    >
+                        <div className="lds-roller">
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                            <div></div>
+                        </div>
+                        <p className="text-white fs-5">Loading...</p>
+                    </div>
+                ) : (
+                    <></>
+                )}
             </>
         );
     }

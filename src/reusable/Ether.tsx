@@ -2,7 +2,6 @@ import ClassNames from "classnames";
 import * as React from "react";
 
 import Style from "./Ether.scss";
-const icon = require("assets/images/ETH_icon.svg");
 
 export function formatEth(gwei: number, precision = 9) {
     return (gwei / 1e9).toFixed(precision);
@@ -23,12 +22,7 @@ const Ether = ({gwei, precision = 9, showCurrencySymbol = false, colored = false
         {[Style.ether_negativ]: colored && gwei < 0}
     );
 
-    return (
-        <span className={classNames}>
-            <span className={Style.value}>{ether}</span>
-            {showCurrencySymbol && <img className={Style.icon} src={icon} />}
-        </span>
-    );
+    return <span className={classNames}></span>;
 };
 
 export default Ether;
