@@ -170,8 +170,9 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         const tokenContract = new ethers.Contract(TOKEN_ADDRESS, tokenAbi, provider);
         const allowance = await tokenContract.allowance(address, CONTRACT_ADDRESS);
         let amount = this.props.plinko.value.toString();
+        let signedTokenContract = tokenContract.connect(signer);
         if (parseFloat(amount) > parseFloat(ethers.utils.formatUnits(allowance, "ether"))) {
-            await tokenContract.approve(CONTRACT_ADDRESS, ethers.utils.parseUnits(amount, "gwei"));
+            await signedTokenContract.approve(CONTRACT_ADDRESS, ethers.utils.parseUnits(amount, "gwei"));
         }
         const contract = new ethers.Contract(CONTRACT_ADDRESS, plinkoAbi, provider);
         let signedContract = contract.connect(signer);
