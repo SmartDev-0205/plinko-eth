@@ -106,7 +106,7 @@ const Layout = ({
                 toggleTheme={toggleTheme}
                 showRegisterModal={showRegisterModal}
             /> */}
-            
+                
             {children}
         </div>
     );

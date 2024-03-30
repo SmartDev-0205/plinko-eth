@@ -1,14 +1,14 @@
 import {GameType, maxBet} from "@dicether/state-channel";
 import * as React from "react";
 import {connect} from "react-redux";
-
+import {ethers} from "ethers";
 import {TransactionReceipt} from "web3-core";
 import {KELLY_FACTOR, MIN_BANKROLL, MIN_BET_VALUE} from "../../../config/config";
 import {addNewBet} from "../../../platform/modules/bets/asyncActions";
 import {Bet} from "../../../platform/modules/bets/types";
 import {toggleHelp} from "../../../platform/modules/games/info/actions";
 import {placeBet, validChainId} from "../../../platform/modules/games/state/asyncActions";
-import {showErrorMessage} from "../../../platform/modules/utilities/actions";
+import {showErrorMessage, showInfoMessage} from "../../../platform/modules/utilities/actions";
 import {catchError} from "../../../platform/modules/utilities/asyncActions";
 import {State} from "../../../rootReducer";
 import {popCnt} from "../../../util/math";
@@ -23,10 +23,32 @@ import {Dispatch, GetState} from "../../../util/util";
 import {CONTRACT_ADDRESS, TOKEN_ADDRESS} from "../../../config/config";
 import Web3 from "web3";
 import Style from "./pinko.scss";
-
 const plinkoAbi = require("assets/json/Plinko.json");
 const tokenAbi = require("assets/json/Token.json");
 const chainId = 56;
+import {providers} from "ethers";
+import {type WalletClient, useAccount, useWalletClient} from "wagmi";
+import {useMemo} from "react";
+import {PLINKO_PAYOUT} from "@dicether/state-channel";
+
+export function walletClientToSigner(walletClient: WalletClient) {
+    const {account, chain, transport} = walletClient;
+    const network = {
+        chainId: chain.id,
+        name: chain.name,
+        ensAddress: chain.contracts?.ensRegistry?.address,
+    };
+    const provider = new providers.Web3Provider(transport, network);
+    const signer = provider.getSigner(account.address);
+    if (chain.id !== chainId) return;
+    return signer;
+}
+
+/** Hook to convert a viem Wallet Client to an ethers.js Signer. */
+export function useEthersSigner({chainId}: {chainId?: number} = {}) {
+    const {data: walletClient} = useWalletClient({chainId});
+    return useMemo(() => (walletClient ? walletClientToSigner(walletClient) : undefined), [walletClient]);
+}
 
 const mapStateToProps = ({games, account, web3, app}: State) => {
     const {info, gameState, plinko} = games;
@@ -49,6 +71,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     changeValue: (value: number) => dispatch(changeValue(value)),
     toggleHelp: (t: boolean) => dispatch(toggleHelp(t)),
     showErrorMessage: (message: string) => dispatch(showErrorMessage(message)),
+    showInfoMessage: (message: string) => dispatch(showInfoMessage(message)),
     catchError: (error: unknown) => catchError(error, dispatch),
 });
 
@@ -60,7 +83,26 @@ export type PlinkoState = {
     result: {betNum: number; num: number; won: boolean; userProfit: number};
     reward: string;
     loading: boolean;
+    account: string;
+    signer: any;
 };
+
+function AccountHookWrapper(props: any) {
+    const {address, isConnected} = useAccount();
+    const signer = useEthersSigner();
+
+    // Call a function passed in through props to send the hook data back to the class component
+    if (isConnected) {
+        props.onAccountFetched(address);
+    }
+
+    if (signer) {
+        props.onSingerFetched(signer);
+    }
+
+    // This component doesn't render anything itself
+    return null;
+}
 
 class Plinko extends React.PureComponent<Props, PlinkoState> {
     private loadedSounds = false;
@@ -74,6 +116,8 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             result: {betNum: 0, num: 0, won: false, userProfit: 0},
             reward: "0",
             loading: false,
+            account: "",
+            signer: null,
         };
     }
 
@@ -82,8 +126,9 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             try {
                 this.calcReward().then((rewardAmount: any) => {
                     if (rewardAmount) {
+                        const strReward = ethers.utils.formatUnits(rewardAmount);
                         this.setState({
-                            reward: Web3.utils.fromWei(rewardAmount, "ether"),
+                            reward: strReward,
                         });
                     }
                 });
@@ -92,13 +137,12 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
     }
 
     private calcReward = async () => {
-        const account = this.props.web3.account;
-        const web3 = this.props.web3.web3;
-        if (web3 && this.props.web3.chainId != chainId) return;
-        if (!(web3 && account)) return;
-        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
-        console.log("stress contract", contract);
-        const tx = contract.methods.playerWinnings(account).call({from: account});
+        const address = this.state.account;
+        const signer = this.state.signer;
+        let provider = signer?.provider;
+        if (!signer) return;
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, plinkoAbi, provider);
+        const tx = contract.playerWinnings(address);
         return tx;
     };
 
@@ -107,7 +151,6 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         const web3 = this.props.web3.web3;
         if (!web3) return;
         const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
-        console.log("stress contract", contract);
         const pliko_play = contract.methods.pliko_play;
         console.log(this.props.plinko.num - 200);
         let tx = pliko_play(this.props.plinko.num - 200).send({
@@ -119,28 +162,35 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
     };
 
     private playTokenPlinko = async () => {
-        const account = this.props.web3.account;
-        const web3 = this.props.web3.web3;
-        if (!web3) return;
-        const tokenContract = new web3.eth.Contract(tokenAbi, TOKEN_ADDRESS);
-        const allowance = tokenContract.methods.allowance;
-        const allowanceValue = await allowance(account, CONTRACT_ADDRESS).call({from: account});
+        const address = this.state.account;
+        const signer = this.state.signer;
+        let provider = signer?.provider;
+        if (!signer) return;
+
+        const tokenContract = new ethers.Contract(TOKEN_ADDRESS, tokenAbi, provider);
+        const allowance = await tokenContract.allowance(address, CONTRACT_ADDRESS);
         let amount = this.props.plinko.value.toString();
-        if (parseFloat(amount) > parseFloat(Web3.utils.fromWei(allowanceValue, "ether"))) {
-            const approve = tokenContract.methods.approve;
-
-            await approve(CONTRACT_ADDRESS, Web3.utils.toWei(amount, "gwei")).send({
-                from: account,
-            });
+        if (parseFloat(amount) > parseFloat(ethers.utils.formatUnits(allowance, "ether"))) {
+            await tokenContract.approve(CONTRACT_ADDRESS, ethers.utils.parseUnits(amount, "gwei"));
         }
-        console.log("allowance value======>", parseFloat(Web3.utils.fromWei(allowanceValue, "ether")));
-
-        const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
-        const pliko_token_play = contract.methods.pliko_token_play;
-        let tx = pliko_token_play(this.props.plinko.num - 200, Web3.utils.toWei(amount, "gwei")).send({
-            from: account,
-        });
-        return tx;
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, plinkoAbi, provider);
+        let signedContract = contract.connect(signer);
+        try {
+            let estimatedGas = await signedContract.estimateGas.pliko_token_play(
+                this.props.plinko.num - 200,
+                ethers.utils.parseUnits(amount, "gwei"),
+                {from: address}
+            );
+            estimatedGas = estimatedGas.add(estimatedGas.div(10));
+            let tx = await signedContract.pliko_token_play(
+                this.props.plinko.num - 200,
+                Web3.utils.toWei(amount, "gwei"),
+                {
+                    gasLimit: estimatedGas, // Use the estimated gas + buffer here
+                }
+            );
+            await tx.wait();
+        } catch (error) {}
     };
 
     private onWithdraw = async () => {
@@ -172,7 +222,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
 
     private onPlaceBet = async () => {
         this.setState({loading: true});
-        const {plinko, addNewBet, placeBet, catchError, showErrorMessage, web3Available, gameState, loggedIn} =
+        const {plinko, addNewBet, placeBet, catchError, showInfoMessage, web3Available, gameState, loggedIn} =
             this.props;
         console.log("number -------------------", plinko.num);
         const safeBetValue = Math.round(plinko.value);
@@ -195,7 +245,10 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
                 ballsFalling: this.state.ballsFalling + 1,
             });
             await this.ui.current?.plinko.current?.addBall(numBitsSet, resultNum);
-            console.log("finshed--------------------------");
+            const payout = PLINKO_PAYOUT[2][this.props.plinko.num - 200];
+            const totalPayout = [...payout.slice(1).reverse(), ...payout];
+            console.log("result=========>", totalPayout, totalPayout[numBitsSet]);
+            showInfoMessage(`Your slot is ${totalPayout[numBitsSet] / 10}X.`);
         } catch (error) {
             catchError(error);
             this.setState({loading: false});
@@ -233,6 +286,16 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         }
     };
 
+    handleAccountFetched = (address: any) => {
+        console.log("get account ------------------>", address);
+        this.setState({account: address});
+    };
+
+    handleSignerFeched = (newSigner: any) => {
+        console.log("signer---------->", newSigner);
+        this.setState({signer: newSigner});
+    };
+
     render() {
         const {nightMode, info, gameState, plinko} = this.props;
         const {num, value} = plinko;
@@ -248,6 +311,10 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
 
         return (
             <>
+                <AccountHookWrapper
+                    onAccountFetched={this.handleAccountFetched}
+                    onSingerFetched={this.handleSignerFeched}
+                />
                 <Helmet>
                     <title>Plinko</title>
                     <meta name="description" content="Ethereum state channel based Plinko game" />

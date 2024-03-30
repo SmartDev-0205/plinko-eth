@@ -99,7 +99,7 @@ class Ui extends React.PureComponent<Props, State> {
                                 />
                             </FormGroup>
                             <Row noGutters>
-                                <Col xs={{size: 8}} sm={{size: 12}}>
+                                {/* <Col xs={{size: 8}} sm={{size: 12}}>
                                     <FormGroup>
                                         <Label>{t("risk")}</Label>
                                         <Select
@@ -112,11 +112,12 @@ class Ui extends React.PureComponent<Props, State> {
                                             <option value={3}>{t("highRisk")}</option>
                                         </Select>
                                     </FormGroup>
-                                </Col>
+                                </Col> */}
                                 <Col xs={{size: 4}} sm={{size: 12}}>
                                     <FormGroup>
                                         <Label>{t("rows")}</Label>
                                         <Select
+                                        className="row-select"
                                             disabled={disableRiskRowUpdate}
                                             value={rows.toString()}
                                             onValue={(val) => onRowsChange(Number.parseInt(val, 10))}

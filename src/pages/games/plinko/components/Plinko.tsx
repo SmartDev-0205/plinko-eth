@@ -239,7 +239,7 @@ class Plinko extends React.Component<Props, State> {
         const {size} = this.state;
         const {rows, resultColumn, risk, showResult} = this.props;
         const payout = PLINKO_PAYOUT[2][rows];
-
+        
         // TODO: Split in plinko and grid !!!
         return (
             <div className={Style.wrapper}>
