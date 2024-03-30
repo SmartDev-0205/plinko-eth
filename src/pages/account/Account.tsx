@@ -11,7 +11,7 @@ import PathNotFound from "../../app/PathNotFound";
 const Account = () => (
     <>
         <Helmet>
-            <title>Account - Dicether</title>
+            <title>Plinko</title>
             <meta name="description" content="Account management" />
         </Helmet>
         <Container>

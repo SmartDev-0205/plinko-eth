@@ -18,7 +18,7 @@ import Style from "./Faq.scss";
 const Faq = ({t}: WithTranslation) => (
     <>
         <Helmet>
-            <title>Faq - Dicether</title>
+            <title>Plinko</title>
             <meta name="description" content="What is Dicether? Why is Dicether better than other casinos?" />
         </Helmet>
         <Container>

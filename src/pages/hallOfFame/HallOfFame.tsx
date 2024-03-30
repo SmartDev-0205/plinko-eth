@@ -67,7 +67,7 @@ class HallOfFame extends React.Component<Props> {
         return (
             <>
                 <Helmet>
-                    <title>Hall of Fame - Dicether</title>
+                    <title>Plinko</title>
                     <meta name="description" content="Top players at Dicether" />
                 </Helmet>
                 <Container>
