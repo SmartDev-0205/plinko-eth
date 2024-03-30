@@ -11,6 +11,9 @@ import Style from "./Header.scss";
 
 const logo = require("assets/images/logoTop.svg");
 
+import {useWeb3Modal} from "@web3modal/react";
+import {useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork} from "wagmi";
+
 interface Props extends WithTranslation {
     authenticated: boolean;
     showChat: boolean;
@@ -90,6 +93,12 @@ class Header extends React.Component<Props, State> {
                                     />
                                 </NavLink>
                             </NavItem>
+                            {/* <NavItem key="2">
+                                <NavLink href="#" onClick={open}>
+                                    Open web3 modals
+                                </NavLink>
+                            </NavItem> */}
+                            ,
                             {authenticated
                                 ? [
                                       <NavItem key="2">

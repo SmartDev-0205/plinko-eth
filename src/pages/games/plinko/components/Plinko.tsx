@@ -45,6 +45,7 @@ class Plinko extends React.Component<Props, State> {
         const {rows, nightMode} = this.props;
 
         this.pins = new Pins(rows, nightMode ? NightColors.pinColor : DayColors.pinColor);
+        console.log("This-----------", this.pins, nightMode);
         this.ballRadius = (0.02 * 16) / rows;
 
         this.state = {
@@ -237,7 +238,7 @@ class Plinko extends React.Component<Props, State> {
     public render() {
         const {size} = this.state;
         const {rows, resultColumn, risk, showResult} = this.props;
-        const payout = PLINKO_PAYOUT[risk][rows];
+        const payout = PLINKO_PAYOUT[2][rows];
 
         // TODO: Split in plinko and grid !!!
         return (

@@ -15,7 +15,6 @@ import Modals from "../platform/components/modals/Modals";
 import StateLoader from "../platform/components/state/StateLoader";
 import {initUser, loadDefaultData} from "../platform/modules/account/asyncActions";
 import {getUser} from "../platform/modules/account/selectors";
-import LogoutRoute from "../platform/modules/utilities/LogoutRoute";
 import {
     fetchAccountBalance,
     fetchAllWeb3,
@@ -30,6 +29,22 @@ import BeforeUnload from "./BeforeUnload";
 import Notification from "./Notification";
 import PathNotFound from "./PathNotFound";
 import {Helmet} from "react-helmet";
+
+import {Web3Modal} from "@web3modal/react";
+import {configureChains, createConfig, WagmiConfig} from "wagmi";
+import {bsc} from "wagmi/chains";
+import {EthereumClient, w3mConnectors, w3mProvider} from "@web3modal/ethereum";
+
+const projectId = "1e423b64330f16ace89e2629454e41a5";
+console.log("projectId", projectId);
+const chains = [bsc];
+const {publicClient} = configureChains(chains, [w3mProvider({projectId})]);
+const wagmiConfig = createConfig({
+    autoConnect: true,
+    connectors: w3mConnectors({projectId, chains}),
+    publicClient,
+});
+const ethereumClient = new EthereumClient(wagmiConfig, chains);
 
 export const mapStateToProps = (state: RootState) => {
     const {account, app, web3, games} = state;
@@ -79,7 +94,7 @@ class App extends React.Component<Props> {
         this.accountBalanceTimer = window.setInterval(() => fetchAccountBalance(), ACCOUNT_BALANCE_POLL_INTERVAL);
         registerAccountChainIdListener();
 
-        this.setTheme(this.props.nightMode);
+        this.setTheme(true);
     }
 
     componentDidUpdate(prevProps: Props) {
@@ -119,15 +134,18 @@ class App extends React.Component<Props> {
                         content="Dicether is an Ethereum dice game. It uses a smart contract based state channel implementation to provide a fast, secure and provably fair gambling experience."
                     />
                 </Helmet>
-                <Layout>
-                    <Routes>
-                        <Route path="/" element={<Game />} />
-                    </Routes>
-                    <Modals />
-                    <BeforeUnload gameState={gameState} />
-                    <Notification notification={notification} />
-                    <StateLoader />
-                </Layout>
+                <WagmiConfig config={wagmiConfig}>
+                    <Layout>
+                        <Routes>
+                            <Route path="/" element={<Game />} />
+                        </Routes>
+                        <Modals />
+                        <BeforeUnload gameState={gameState} />
+                        <Notification notification={notification} />
+                        <StateLoader />
+                    </Layout>
+                </WagmiConfig>
+                <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
             </>
         );
     }

@@ -1,3 +1,5 @@
+declare module '*.jpg';
+declare module '*.png';
 declare module "eth-sig-util" {
     type Data = Array<{type: string; name: string; value: any}>;
 

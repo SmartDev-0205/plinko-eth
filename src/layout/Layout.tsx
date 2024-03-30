@@ -9,6 +9,13 @@ import {toggleTheme} from "../platform/modules/utilities/actions";
 import {State} from "../rootReducer";
 import Footer from "./Footer";
 import Header from "./Header";
+import logoImg from "../assets/images/logo.png";
+
+import {useAccount, useConnect, useDisconnect, useNetwork, useSwitchNetwork} from "wagmi";
+
+import {formatUnits, parseEther, parseUnits} from "viem";
+import {type WalletClient, useWalletClient} from "wagmi";
+import {useWeb3Modal} from "@web3modal/react";
 
 const mapStateToProps = ({chat, account, app, web3}: State) => {
     const show = chat.show;
@@ -40,6 +47,8 @@ type ReduxProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDisp
 
 type Props = ReduxProps & OtherProps;
 
+const chainId = 56;
+
 const Layout = ({
     children,
     showChat,
@@ -53,11 +62,40 @@ const Layout = ({
 }: Props) => {
     const className = showChat ? "chat-open" : "";
 
-    console.log("connected------------------>", connected);
+    const {open} = useWeb3Modal();
+    const {isConnected} = useAccount();
+    const {chain} = useNetwork();
+    const {disconnect} = useDisconnect();
+    const {connect} = useConnect();
+    const {switchNetwork} = useSwitchNetwork();
 
     return (
         <div id="app" className={className}>
-            <Header
+            <div className="main-container fixed inset-0 h-full w-full opacity-10 object-cover z-0" />
+            <div className="connect-wallet-container d-flex z-3">
+                <img src={logoImg} alt="logo" className="logo" loading="lazy" />
+                <div className="d-flex align-items-center  gap-8">
+                    {isConnected ? (
+                        chain?.id === Number(chainId) ? (
+                            <button className="connect-wallet font-weight-bold text-md" onClick={() => disconnect()}>
+                                Disconnect
+                            </button>
+                        ) : (
+                            <button
+                                className="connect-wallet font-weight-bold text-md"
+                                onClick={() => switchNetwork?.(Number(chainId))}
+                            >
+                                Switch network
+                            </button>
+                        )
+                    ) : (
+                        <button className="connect-wallet font-weight-bold text-md " onClick={() => open()}>
+                            Connect Wallet
+                        </button>
+                    )}
+                </div>
+            </div>
+            {/* <Header
                 showChat={showChat}
                 authenticated={authenticated}
                 nightMode={nightMode}
@@ -66,7 +104,7 @@ const Layout = ({
                 authenticate={authenticate}
                 toggleTheme={toggleTheme}
                 showRegisterModal={showRegisterModal}
-            />
+            /> */}
             {children}
         </div>
     );

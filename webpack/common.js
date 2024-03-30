@@ -191,7 +191,7 @@ module.exports = {
             title: Title,
             filename: process.env.DEV_SERVER === "TRUE" ? "index.html" : "../index.html",
             template: "root.ejs",
-            favicon: "assets/images/favicon.png",
+            favicon: "assets/images/favicon.ico",
             inject: "body",
         }),
         new CircularDependencyPlugin({

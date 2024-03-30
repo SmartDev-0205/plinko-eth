@@ -10,11 +10,8 @@ import "./config/interceptors";
 import "./googleanalytics";
 import Root from "./Root";
 import {store} from "./store";
-import {parseReferral} from "./util/affiliate";
 
 dayjs.extend(localizedFormat);
-
-parseReferral();
 
 import ResizeObserver from "resize-observer-polyfill";
 

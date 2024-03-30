@@ -81,7 +81,7 @@ class Ui extends React.PureComponent<Props, State> {
                             ref={this.plinko}
                             rows={rows}
                             risk={risk}
-                            nightMode={nightMode}
+                            nightMode={true}
                             showResult={showResult}
                             resultColumn={resultCol}
                         />

@@ -94,7 +94,7 @@ export default class Input extends React.Component<Props, State> {
         const classNameSuffix = ClassNames("form-control", Style.input__suffix);
 
         return (
-            <div className="input">
+            <div className="input" style={{flex: '1 1 0%'}}>
                 <input
                     placeholder={placeholder}
                     className={className}
@@ -104,6 +104,7 @@ export default class Input extends React.Component<Props, State> {
                     onBlur={this.onBlur}
                     onChange={this.onChange}
                     onFocus={this.onFocus}
+                    
                 />
                 {suffix && (
                     <div className={classNameSuffix}>

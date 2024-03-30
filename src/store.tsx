@@ -45,10 +45,6 @@ if (process.env.SENTRY_LOGGING) {
     });
 }
 
-if (process.env.REDUX_LOGGING) {
-    middlewares.push(createLogger());
-}
-
 const sentryReduxEnhancer = Sentry.createReduxEnhancer({
     // Optionally pass options listed below
 });

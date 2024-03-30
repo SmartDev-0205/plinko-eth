@@ -96,12 +96,9 @@ class Game extends React.Component<Props> {
     };
 
     render() {
-        const {gameState, info, web3State, loggedIn} = this.props;
-        const {showHelp, showExpertView, sound} = info;
-
         return (
             <div>
-                <Section gray>
+                <Section gray className="section">
                     <Container>
                         <div className={Style.wrapper}>
                             <div className={Style.gameWrapper}>

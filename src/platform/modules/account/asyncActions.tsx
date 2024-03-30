@@ -54,22 +54,13 @@ export function changeJWT(jwt: string | null) {
 
 export function authenticate() {
     return async (dispatch: Dispatch, getState: GetState) => {
-        const web3State = getState().web3;
-        const web3 = web3State.web3;
-        if (web3 === null) {
-            dispatch(showMissingWalletModal());
-            return undefined;
-        }
-
-        if (web3State.account === null) {
-            await requestAccounts(dispatch);
-        }
-        const web3Account = getState().web3.account;
-        if (web3Account === null) {
-            dispatch(showErrorMessage("Error: You need to log in to your web3 wallet!!"));
-            return;
-        }
-        return;
+        // requestAccounts
+        // const web3Account = getState().web3.account;
+        // if (web3Account === null) {
+        //     dispatch(showErrorMessage("Error: You need to log in to your web3 wallet!!"));
+        //     return;
+        // }
+        // return;
     };
 }
 

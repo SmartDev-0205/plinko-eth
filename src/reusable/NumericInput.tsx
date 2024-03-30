@@ -55,6 +55,7 @@ export default class NumericInput extends React.Component<Props> {
         const {number, precision, suffix} = this.props; // tslint:disable-line variable-name
         const value = precision !== undefined ? number.toFixed(precision) : number.toString();
 
-        return <Input suffix={suffix} value={value} validate={this.validate} onValue={this.onValue} />;
+                    
+                    return <Input suffix={suffix} value={value} validate={this.validate} onValue={this.onValue}  />;
     }
 }

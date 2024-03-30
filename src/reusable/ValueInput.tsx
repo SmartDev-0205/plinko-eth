@@ -65,7 +65,7 @@ export default class ValueInput extends React.PureComponent<Props> {
     render() {
         const {value, min, max} = this.props;
         return (
-            <InputGroup>
+            <InputGroup className="form-container" >
                 <NumericInput
                     className={"form-control"}
                     step={min / ETHER_DIV}

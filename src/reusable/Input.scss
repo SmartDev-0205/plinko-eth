@@ -1,26 +1,28 @@
-@import 'variables';
+@import "variables";
 
 .input-group > .input {
-  position: relative;
-  flex: 1 1 auto;
-  width: 1%;
+    position: relative;
+    flex: 1 1 0%;
+    width: 1%;
 }
 
 .input {
-  position: relative;
+    position: relative;
+    flex: 1 1 0%;
 }
 
 .input__suffix {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  border-color: transparent;
-  background: transparent !important; // should be never changed
-  pointer-events: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    border-color: transparent;
+    background: transparent !important; // should be never changed
+    pointer-events: none;
 }
 
 .input-group .input:not(:last-child) input {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    flex: 1 1 0%;
 }

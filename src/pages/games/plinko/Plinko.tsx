@@ -26,6 +26,7 @@ import Style from "./pinko.scss";
 
 const plinkoAbi = require("assets/json/Plinko.json");
 const tokenAbi = require("assets/json/Token.json");
+const chainId = 56;
 
 const mapStateToProps = ({games, account, web3, app}: State) => {
     const {info, gameState, plinko} = games;
@@ -78,20 +79,22 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
 
     componentDidMount() {
         setInterval(() => {
-            this.calcReward().then((rewardAmount: any) => {
-                if (rewardAmount) {
-                    this.setState({
-                        reward: Web3.utils.fromWei(rewardAmount, "ether"),
-                    });
-                }
-            });
+            try {
+                this.calcReward().then((rewardAmount: any) => {
+                    if (rewardAmount) {
+                        this.setState({
+                            reward: Web3.utils.fromWei(rewardAmount, "ether"),
+                        });
+                    }
+                });
+            } catch (error) {}
         }, 1000); // Set up the interval
     }
 
     private calcReward = async () => {
         const account = this.props.web3.account;
         const web3 = this.props.web3.web3;
-        console.log("starting calcuation reward-------------", this.props.web3);
+        if (web3 && this.props.web3.chainId != chainId) return;
         if (!(web3 && account)) return;
         const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
         console.log("stress contract", contract);
@@ -120,11 +123,17 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         const web3 = this.props.web3.web3;
         if (!web3) return;
         const tokenContract = new web3.eth.Contract(tokenAbi, TOKEN_ADDRESS);
-        const approve = tokenContract.methods.approve;
+        const allowance = tokenContract.methods.allowance;
+        const allowanceValue = await allowance(account, CONTRACT_ADDRESS).call({from: account});
         let amount = this.props.plinko.value.toString();
-        await approve(CONTRACT_ADDRESS, Web3.utils.toWei(amount, "gwei")).send({
-            from: account,
-        });
+        if (parseFloat(amount) > parseFloat(Web3.utils.fromWei(allowanceValue, "ether"))) {
+            const approve = tokenContract.methods.approve;
+
+            await approve(CONTRACT_ADDRESS, Web3.utils.toWei(amount, "gwei")).send({
+                from: account,
+            });
+        }
+        console.log("allowance value======>", parseFloat(Web3.utils.fromWei(allowanceValue, "ether")));
 
         const contract = new web3.eth.Contract(plinkoAbi, CONTRACT_ADDRESS);
         const pliko_token_play = contract.methods.pliko_token_play;

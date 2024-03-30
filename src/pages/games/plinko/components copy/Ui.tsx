@@ -100,18 +100,20 @@ class Ui extends React.PureComponent<Props, State> {
                             </FormGroup>
                             <Row noGutters>
                                 <Col xs={{size: 8}} sm={{size: 12}}>
-                                    <FormGroup>
-                                        <Label>{t("risk")}</Label>
-                                        <Select
-                                            disabled={disableRiskRowUpdate}
-                                            value={risk.toString()}
-                                            onValue={(val) => onRiskChange(Number.parseInt(val, 10))}
-                                        >
-                                            <option value={1}>{t("lowRisk")}</option>
-                                            <option value={2}>{t("mediumRisk")}</option>
-                                            <option value={3}>{t("highRisk")}</option>
-                                        </Select>
-                                    </FormGroup>
+                                    <div className="d-none">
+                                        <FormGroup>
+                                            <Label>{t("risk")}</Label>
+                                            <Select
+                                                disabled={disableRiskRowUpdate}
+                                                value={risk.toString()}
+                                                onValue={(val) => onRiskChange(Number.parseInt(val, 10))}
+                                            >
+                                                <option value={1}>{t("lowRisk")}</option>
+                                                <option value={2}>{t("mediumRisk")}</option>
+                                                <option value={3}>{t("highRisk")}</option>
+                                            </Select>
+                                        </FormGroup>
+                                    </div>
                                 </Col>
                                 <Col xs={{size: 4}} sm={{size: 12}}>
                                     <FormGroup>
