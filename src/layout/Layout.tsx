@@ -95,6 +95,7 @@ const Layout = ({
                     )}
                 </div>
             </div>
+
             {/* <Header
                 showChat={showChat}
                 authenticated={authenticated}
@@ -105,6 +106,7 @@ const Layout = ({
                 toggleTheme={toggleTheme}
                 showRegisterModal={showRegisterModal}
             /> */}
+            
             {children}
         </div>
     );
