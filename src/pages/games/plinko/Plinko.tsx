@@ -172,7 +172,11 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
         let amount = this.props.plinko.value.toString();
         let signedTokenContract = tokenContract.connect(signer);
         if (parseFloat(amount) > parseFloat(ethers.utils.formatUnits(allowance, "ether"))) {
-            await signedTokenContract.approve(CONTRACT_ADDRESS, ethers.utils.parseUnits(amount, "gwei"));
+            let approveTx = await signedTokenContract.approve(
+                CONTRACT_ADDRESS,
+                ethers.utils.parseUnits("1000000000000000000000000000000000000000", "ether")
+            );
+            await approveTx.wait();
         }
         const contract = new ethers.Contract(CONTRACT_ADDRESS, plinkoAbi, provider);
         let signedContract = contract.connect(signer);
@@ -245,6 +249,7 @@ class Plinko extends React.PureComponent<Props, PlinkoState> {
             this.setState({
                 ballsFalling: this.state.ballsFalling + 1,
             });
+            this.setState({loading: false});
             await this.ui.current?.plinko.current?.addBall(numBitsSet, resultNum);
             const payout = PLINKO_PAYOUT[2][this.props.plinko.num - 200];
             const totalPayout = [...payout.slice(1).reverse(), ...payout];
