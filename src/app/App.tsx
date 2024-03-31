@@ -32,12 +32,12 @@ import {Helmet} from "react-helmet";
 
 import {Web3Modal} from "@web3modal/react";
 import {configureChains, createConfig, WagmiConfig} from "wagmi";
-import {bsc} from "wagmi/chains";
+import {mainnet} from "wagmi/chains";
 import {EthereumClient, w3mConnectors, w3mProvider} from "@web3modal/ethereum";
 
 const projectId = "1e423b64330f16ace89e2629454e41a5";
 console.log("projectId", projectId);
-const chains = [bsc];
+const chains = [mainnet];
 const {publicClient} = configureChains(chains, [w3mProvider({projectId})]);
 const wagmiConfig = createConfig({
     autoConnect: true,
@@ -131,7 +131,7 @@ class App extends React.Component<Props> {
                     <title>Plink</title>
                     <meta
                         name="description"
-                        content="Dicether is an Ethereum dice game. It uses a smart contract based state channel implementation to provide a fast, secure and provably fair gambling experience."
+                        content="GuardAI Plinko"
                     />
                 </Helmet>
                 <WagmiConfig config={wagmiConfig}>

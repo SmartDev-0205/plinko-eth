@@ -47,7 +47,7 @@ type ReduxProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDisp
 
 type Props = ReduxProps & OtherProps;
 
-const chainId = 56;
+const chainId = 1;
 
 const Layout = ({
     children,
@@ -106,7 +106,7 @@ const Layout = ({
                 toggleTheme={toggleTheme}
                 showRegisterModal={showRegisterModal}
             /> */}
-                
+
             {children}
         </div>
     );

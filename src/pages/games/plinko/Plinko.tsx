@@ -25,7 +25,7 @@ import Web3 from "web3";
 import Style from "./pinko.scss";
 const plinkoAbi = require("assets/json/Plinko.json");
 const tokenAbi = require("assets/json/Token.json");
-const chainId = 56;
+const chainId = 1;
 import {providers} from "ethers";
 import {type WalletClient, useAccount, useWalletClient} from "wagmi";
 import {useMemo} from "react";

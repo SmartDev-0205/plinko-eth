@@ -4,7 +4,7 @@ export const VERSION = process.env.VERSION || "";
 export const BUILD_DATE = new Date(process.env.BUILD_DATE || new Date());
 
 export const CONTRACT_ADDRESS = toChecksumAddress(process.env.CONTRACT_ADDRESS || "");
-export const TOKEN_ADDRESS = toChecksumAddress("0xe5f129a4770d0e955c064b5d0adecdfc7726eff8");
+export const TOKEN_ADDRESS = toChecksumAddress("0xd1679946ba555ebf5cb38e8b089ef1e1e5d2abb1");
 console.log("address", CONTRACT_ADDRESS, TOKEN_ADDRESS);
 export const CHAIN_ID = Number.parseInt(process.env.CHAIN_ID || "1", 10);
 export const SIGNATURE_VERSION = 2;

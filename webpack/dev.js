@@ -4,12 +4,12 @@ const { merge }  = require('webpack-merge');
 const common = require('./common');
 
 
-const contractAddress = "0x5f2ab9103a669bb09D94D6C9883c8EEb78e676FA";
-const tokenAddress = "0xe5f129a4770d0e955c064b5d0adecdfc7726eff8";
+const contractAddress = "0x3A92FA08E717fdd59930505E3C091FE32D713AAa";
+const tokenAddress = "0xd1679946ba555ebf5cb38e8b089ef1e1e5d2abb1";
 const serverAddress = "0x437EC7503dFF1b5F5Ab4Dab4455C45a270629f4d";
 const apiUrl = 'https://api.dicether.com/api';
 const websocketUrl = 'wss://websocket.dicether.com/socket.io/?EIO=4&transport=websocket&sid=2xp0a45GUGjAGEbQAMzS';
-const chainId = 56;
+const chainId = 1;
 
 
 module.exports = merge(common, {
